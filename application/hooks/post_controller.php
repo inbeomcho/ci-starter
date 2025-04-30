@@ -39,14 +39,14 @@ class post_controller
 
             # 기본 레이아웃 (header, footer 없음)
         } else if ($this->ci->template_->defined('layout_empty')) {
-            $this->ci->output->enable_profiler(false);
+            // $this->ci->output->enable_profiler(false); // 제거 시 디버깅에 도움됨
             $this->ci->template_->viewDefine('layout', 'common/layout_empty.tpl');
             $this->ci->template_->viewAssign($this->ci->optimizer->makeOptimizerScriptTag());
 
             $this->ci->template_->viewPrint('layout');
 
         } else {
-            $this->ci->output->enable_profiler(false);
+            // $this->ci->output->enable_profiler(false); // 제거 시 디버깅에 도움됨
         }
     }
 

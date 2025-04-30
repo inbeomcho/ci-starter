@@ -52,3 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'main';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+// // 게시판
+// $route['board'] = 'Board/index';
+// $route['board/(:num)'] = 'Board/view/$1';
