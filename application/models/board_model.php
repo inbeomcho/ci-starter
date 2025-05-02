@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 Class Board_model extends CI_Model {
 
@@ -8,35 +8,7 @@ Class Board_model extends CI_Model {
 
     // 전체 불러오기
     public function get_boards($board_id=0) {
-        $sql = "
-            WITH RECURSIVE board_tree AS (
-                SELECT 
-                    board_id,
-                    board_title,
-                    board_content,
-                    owner_board_id,
-                    board_depth,
-                    parent_id,
-                    CAST(board_id AS CHAR(100)) AS path
-                FROM board
-                WHERE board_id = owner_board_id
-
-                UNION ALL
-
-                SELECT 
-                    b.board_id,
-                    b.board_title,
-                    b.board_content,
-                    b.owner_board_id,
-                    b.board_depth,
-                    b.parent_id,
-                    CONCAT(bt.path, '-', b.board_id) AS path
-                FROM board b
-                JOIN board_tree bt ON b.parent_id = bt.board_id
-            )
-            SELECT * FROM board_tree
-            ORDER BY path;
-        ";
+        $sql = "select * from board order by group_id desc, group_order;";
 
         return $this->db->query($sql)->result_array();
     }
@@ -48,10 +20,64 @@ Class Board_model extends CI_Model {
         return $data->row_array();
     }
 
+    // 작성
+    public function write_board($title, $content, $parent_id = 0) {
+        if ($parent_id == 0) {
+            $last_group = $this->db->query("SELECT MAX(group_id) AS max_group_id FROM board")->row();
+            $group_id = ($last_group->max_group_id ?? 0) + 1;
+    
+            $data = [
+                'board_title'   => $title,
+                'board_content' => $content,
+                'group_id'      => $group_id,
+                'group_order'   => '0',
+                'depth'         => 0
+            ];
+    
+        } else {
+            $parent = $this->db->query("SELECT * FROM board WHERE board_id = ?", [$parent_id])->row_array();
+    
+            $group_id = $parent['group_id'];
+            $depth = $parent['depth'] + 1;
+    
+            $like = $parent['group_order'] . '-';
+            $child = $this->db->query("
+                SELECT group_order FROM board 
+                WHERE group_id = ? AND group_order LIKE ? AND depth = ? 
+                ORDER BY group_order ASC LIMIT 1",
+                [$group_id, $like . '%', $depth]
+            )->row_array();
+    
+            if ($child) {
+                $new_order = $like . uniqid();
+            } else {
+                $new_order = $like . '1';
+            }
+    
+            $data = [
+                'board_title'   => $title,
+                'board_content' => $content,
+                'group_id'      => $group_id,
+                'group_order'   => $new_order,
+                'depth'         => $depth
+            ];
+        }
+    
+        return $this->db->insert('board', $data);
+    }
+
     // 삭제
     public function delete_board($board_id) {
         $set = array('board_title'=>'', 'board_content' => '');
         $where = array('board_id'=>$board_id);
         return $this->db->update('board', $set,$where);
+    }
+
+    // 업데이트
+    public function update_board($data) {
+        $set = array('board_title'=>$data['board_title'],
+                    'board_content' => $data['board_content']);
+        $where = array('board_id'=>$data['board_id']);
+        $this->db->update('board',$set,$where);
     }
 }

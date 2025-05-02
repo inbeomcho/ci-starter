@@ -26,6 +26,8 @@
 
         .context_area {
                 flex:1;
+                display: flex;
+                flex-direction: column;
         }
 
         .footer_area {
