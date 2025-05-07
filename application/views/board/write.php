@@ -44,7 +44,7 @@
         const obj_write = JSON.stringify({
             board_title: document.getElementById("detail_title").value,
             board_content: document.getElementById("detail_content").value,
-            board_id: document.getElementById('board_id').value
+            parent_id: document.getElementById('board_id').value
         });
 
         fetch('/board/write/', {
@@ -65,9 +65,7 @@
         });
     }
 </script>
-<?php if ($isReply) :?>
-    <input type="hidden" id="board_id" value="<?php echo $board['board_id'] ?>">
-<?php endif; ?>
+<input type="hidden" id="board_id" value="<?php echo $board['board_id'] ?? 0 ?>">
 <div class="detail_body">
     <input id="detail_title" type="text" placeholder="제목을 입력하세요">
     <textarea id="detail_content" placeholder="내용을 입력하세요"></textarea>

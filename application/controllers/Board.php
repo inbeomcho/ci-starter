@@ -58,25 +58,20 @@ class Board extends CI_Controller {
     }
 
     // 삭제
-    public function delete($board_id=null) {
-        $this->check_request_method(['PATCH']);
+    public function delete() {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+        $board_id = $data['board_id'] ?? null;
+
+        $this->check_request_method(['POST']);
         $this->check_int_param($board_id);
         
-        try {
-            $this->board_model->delete_board($board_id);
-            
-            $this->output
-            ->set_status_header(200)
-            ->set_output(json_encode(['success' => true]));
-        } catch (Exception $e) {
-            $this->output
-            ->set_status_header(500)
-            ->set_output(json_encode(['error'=> $e->getMessage()]));
-        }
+        $this->board_model->delete_board($board_id);
     }
     
     // 작성
     public function write($parent_id=0) {
+        // 누른 게시글의 board_id가 parent_id로 작동함
         $this->check_request_method(['POST','GET']);
         $this->check_int_param($parent_id);
 
@@ -97,7 +92,7 @@ class Board extends CI_Controller {
             $json = file_get_contents('php://input');
             $data = json_decode($json, true);
 
-            $this->board_model->write_board($data['board_title'], $data['board_content'], $data['board_id']);
+            $this->board_model->write_board($data['board_title'], $data['board_content'], $data['parent_id']);
         }
     }
     
@@ -105,7 +100,6 @@ class Board extends CI_Controller {
     public function update($board_id=null) {
         $this->check_request_method(['PATCH', 'GET']);
         $this->check_int_param($board_id);
-        
         
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $data['board'] = $this->board_model->get_board($board_id);
@@ -145,9 +139,9 @@ class Board extends CI_Controller {
     }
     
     private function check_deleted_board($data) {
+        // soft delete 게시물 접속 차단
         if (!$data) {
             show_error('잘못된 접근 방식', 405);
         }
     }
-    
 }

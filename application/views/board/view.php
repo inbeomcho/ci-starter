@@ -24,8 +24,13 @@
 <script>
     function deleteSubmit() {
         event.preventDefault();
-        fetch("/board/delete/<?php echo $board['board_id']; ?>", {
-            method: "PATCH",
+
+        const obj_delete = JSON.stringify({"board_id" : <?php echo $board['board_id']?>});
+
+        fetch("/board/delete/", {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: obj_delete
         })
         .then(response => {
             if (response.ok) {
@@ -36,7 +41,7 @@
             }
         })
         .catch(error => {
-            alert(error.error);
+            alert(error);
             window.location.href = "/board/";
         });
     }

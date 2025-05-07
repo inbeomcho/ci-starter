@@ -24,7 +24,17 @@ Class Board_model extends CI_Model {
     }
 
     // 작성
+    private function check_deleted_parent($parent_id) {
+        // 작성 중 부모 게시글 하드 딜리트된 경우
+        $this->db->from('board');
+        $this->db->where('board_id', $parent_id);
+        $this->db->limit(1);
+        $query = $this->db->get();
+        
+        return ($query->num_rows() > 0) ? $parent_id : 0;
+    }
     public function write_board($title, $content, $parent_id = 0) {
+        $parent_id = $this->check_deleted_parent($parent_id);
         if ($parent_id == 0) {
             $last_group = $this->db->query("SELECT MAX(group_id) AS max_group_id FROM board")->row();
             $group_id = ($last_group->max_group_id ?? 0) + 1;
@@ -70,10 +80,32 @@ Class Board_model extends CI_Model {
     }
 
     // 삭제
+    private function count_group($board_id) {
+        $sql = '
+            SELECT COUNT(group_id) AS cnt
+            FROM board
+            WHERE group_id = (
+                SELECT group_id
+                FROM board
+                WHERE board_id = ?
+            )
+        ';
+        $query = $this->db->query($sql, [$board_id]);
+        echo $query->row()->cnt;
+        return $query->row()->cnt;
+    }
     public function delete_board($board_id) {
-        $set = array('board_title'=>'', 'board_content' => '');
-        $where = array('board_id'=>$board_id);
-        $this->db->update('board', $set,$where);
+        $count = $this->count_group($board_id);
+
+        if ($count>1) {
+            // soft delete
+            $set = array('board_title'=>'', 'board_content' => '');
+            $where = array('board_id'=>$board_id);
+            $this->db->update('board', $set,$where);
+        } else {
+            // hard delete
+            $this->db->delete('board', ['board_id'=> $board_id]);
+        }
     }
 
     // 업데이트
