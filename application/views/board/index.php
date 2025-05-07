@@ -1,23 +1,13 @@
 <style>
     .list_header {
         display: flex;
-        gap: 15px;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
     }
-    .common_btn {
-        background-color: rgba(12, 158, 102, 0.1);
-        transition: background-color 0.2s;
-        cursor:pointer;
-        border-radius: 6px;
-        border: 1px solid rgba(12, 158, 102, 0.5);
-        width: 100px;
-        height: 30px;
-        margin-bottom: 20px;
+    .right_actions {
+        margin-left: auto;
     }
-    .common_btn:hover {
-        background-color: rgba(12, 158, 102, 0.2);
-    }
-
     .board_wrapper {
         background-color: rgba(12, 158, 102, 0.1);
         border-left: 4px solid #0c9e66;
@@ -43,23 +33,41 @@
     }
 </style>
 <div class="list_header">
-    <a href="/board/write/">
-        <button class="common_btn" type="button">새글작성</button>
-    </a>
+    <div class="left_actions">
+        <a href="/">
+            <button class="board_common_btn"> 뒤로가기</button>
+        </a>
+    </div>
+    <div class="right_actions">
+        <a href="/board/write/">
+            <button class="board_common_btn">새글작성</button>
+        </a>
+    </div>
 </div>
-<?php foreach ($board as $board_item) : ?>
-    <?php $depth = min($board_item['depth'], 7); ?>
+<?php if ($board) : ?>
+    <?php foreach ($board as $board_item) : ?>
+        <?php $depth = min($board_item['depth'], 7); ?>
+        <div class="board_container">
+            <div class="board_wrapper" style="margin-left: <?= 20 * $depth ?>px;">
+                <?php if ($board_item['board_title']=='') :?>
+                <a>
+                    <?= htmlspecialchars("게시물이 삭제되었습니다.") ?>
+                </a>
+                <?php else :?>
+                <a href="/board/view/<?= $board_item['board_id'] ?>">
+                    <?= htmlspecialchars($board_item['board_title']) ?>
+                </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+<?php else : ?>
     <div class="board_container">
-        <div class="board_wrapper" style="margin-left: <?= 20 * $depth ?>px;">
-            <?php if ($board_item['board_title']=='') :?>
+        <div class="board_wrapper">
             <a>
-                <?= htmlspecialchars("게시물이 삭제되었습니다.") ?>
+                <?= htmlspecialchars("게시물이 없습니다.") ?>
             </a>
-            <?php else :?>
-            <a href="/board/view/<?= $board_item['board_id'] ?>">
-                <?= htmlspecialchars($board_item['board_title']) ?>
-            </a>
-            <?php endif; ?>
         </div>
     </div>
-<?php endforeach; ?>
+<?php endif; ?>
+

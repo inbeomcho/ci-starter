@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Main extends CI_Controller
+class Main extends MY_Controller
 {
     // construct -> index
     // __init__
@@ -15,7 +15,8 @@ class Main extends CI_Controller
     public function index()
     {
         $this->load->view('templates/header');
-        $this->load->view('templates/footer');
+        $this->load->view('main');
         
+        $this->load->view('templates/footer');
     }
 }

@@ -14,8 +14,6 @@ class Board extends CI_Controller {
         $method = $segements[2] ?? null;
         $param = $segements[3] ?? null;
 
-        // echo $method, $param;
-
         if ($method == 'view') {
             $this->view($param);
         } elseif ($method == 'delete') {
@@ -33,6 +31,8 @@ class Board extends CI_Controller {
 
     // 전체보기
     public function list() {
+        $this->check_request_method(['GET']);
+
         $data['board'] = $this->board_model->get_boards();
         $data['title'] = "List";
 
@@ -42,9 +42,15 @@ class Board extends CI_Controller {
     }
 
     // 상세보기
-    public function view($board_id) {
+    public function view($board_id=null) {
+        $this->check_request_method(['GET']);
+        $this->check_int_param($board_id);
+
         $data['board'] = $this->board_model->get_board($board_id);
         $data['title'] = "Detail";
+        
+        $this->check_null_pointer($data['board']);
+        $this->check_deleted_board($data['board']['board_title']);
         
         $this->load->view("templates/header", $data);
         $this->load->view("board/view", $data);
@@ -52,11 +58,9 @@ class Board extends CI_Controller {
     }
 
     // 삭제
-    public function delete($board_id) {
-        if ($_SERVER['REQUEST_METHOD'] !== 'PATCH') {
-            show_error('잘못된 접근 방식', 405);
-            return;
-        }
+    public function delete($board_id=null) {
+        $this->check_request_method(['PATCH']);
+        $this->check_int_param($board_id);
         
         try {
             $this->board_model->delete_board($board_id);
@@ -73,18 +77,23 @@ class Board extends CI_Controller {
     
     // 작성
     public function write($parent_id=0) {
-        // 페이지 로드
+        $this->check_request_method(['POST','GET']);
+        $this->check_int_param($parent_id);
+
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $data['board'] = $this->board_model->get_board($parent_id);
             $data['title'] = $parent_id==0?'Write' : 'Reply';
+            $data['isReply'] = $parent_id==0?false : true;
+            
+            if ($data['isReply']) {
+                $this->check_null_pointer($data['board']);
+                $this->check_deleted_board($data['board']['board_title']);
+            }
             
             $this->load->view("templates/header", $data);
             $this->load->view("board/write", $data);
             $this->load->view("templates/footer", $data);   
-        }
-
-        // api 요청 처리
-        if ($_SERVER['REQUEST_METHOD'] === "POST") {
+        } elseif ($_SERVER['REQUEST_METHOD'] === "POST") {
             $json = file_get_contents('php://input');
             $data = json_decode($json, true);
 
@@ -92,20 +101,53 @@ class Board extends CI_Controller {
         }
     }
     
-    public function update($board_id=0) {
+    // 수정
+    public function update($board_id=null) {
+        $this->check_request_method(['PATCH', 'GET']);
+        $this->check_int_param($board_id);
+        
+        
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $data['board'] = $this->board_model->get_board($board_id);
             $data['title'] = 'Update';
 
+            $this->check_null_pointer($data['board']);
+            $this->check_deleted_board($data['board']['board_title']);
+
             $this->load->view("templates/header", $data);
             $this->load->view("board/update", $data);
             $this->load->view("templates/footer", $data);
-        }
-
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        } elseif ($_SERVER["REQUEST_METHOD"] == "PATCH") {
             $json = file_get_contents('php://input');
             $data = json_decode($json, true);
             $this->board_model->update_board($data);
         }
     }
+
+
+    // 기능 메서드
+    private function check_request_method($method) {
+        if (!in_array($_SERVER['REQUEST_METHOD'], $method)) {
+            show_error('잘못된 접근 방식', 405);
+        }
+    }
+    
+    private function check_int_param($param) {
+        if (!is_numeric($param)) {
+            show_error('잘못된 접근 방식', 405);
+        }
+    }
+    
+    private function check_null_pointer($data) {
+        if (!$data) {
+            show_error('잘못된 접근 방식', 405);
+        }
+    }
+    
+    private function check_deleted_board($data) {
+        if (!$data) {
+            show_error('잘못된 접근 방식', 405);
+        }
+    }
+    
 }

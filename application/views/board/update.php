@@ -1,20 +1,5 @@
 
 <style>
-    .common_btn {
-        background-color: rgba(12, 158, 102, 0.1);
-        transition: background-color 0.2s;
-        cursor: pointer;
-        border-radius: 6px;
-        border: 1px solid rgba(12, 158, 102, 0.5);
-        width: 100px;
-        height: 30px;
-        margin-bottom: 20px;
-    }
-    
-    .common_btn:hover {
-        background-color: rgba(12, 158, 102, 0.2);
-    }
-    
     .detail_body {
         display: flex;
         flex-direction: column;
@@ -55,14 +40,15 @@
 
 <script>
     function submitUpdate() {
+        event.preventDefault();
         const obj_write = JSON.stringify({
             board_title: document.getElementById("detail_title").value,
             board_content: document.getElementById("detail_content").value,
             board_id: document.getElementById('board_id').value
         });
 
-        fetch('/board/update/', {
-            method: "POST",
+        fetch('/board/update/<?php echo $board['board_id']; ?>', {
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -79,6 +65,12 @@
         });
     }
 </script>
+<div class="header_actions">
+    <a href="/board/view/<?php echo $board['board_id'] ?>">
+        <button class="board_common_btn"><i class="fas fa-arrow-left"></i> 뒤로가기</button>
+    </a>
+</div>
+
 <input type="hidden" id="board_id" value="<?php echo $board['board_id'] ?>">
 
 <div class="detail_body">
@@ -87,6 +79,5 @@
 </div>
 
 <div class="detail_footer">
-    <button class="common_btn" onclick="history.back()">취소</button>
-    <button class="common_btn" onclick="submitUpdate()">수정</button>
+    <button class="board_common_btn" onclick="submitUpdate()">수정</button>
 </div>

@@ -1,20 +1,5 @@
 
 <style>
-    .common_btn {
-        background-color: rgba(12, 158, 102, 0.1);
-        transition: background-color 0.2s;
-        cursor: pointer;
-        border-radius: 6px;
-        border: 1px solid rgba(12, 158, 102, 0.5);
-        width: 100px;
-        height: 30px;
-        margin-bottom: 20px;
-    }
-    
-    .common_btn:hover {
-        background-color: rgba(12, 158, 102, 0.2);
-    }
-    
     .detail_body {
         display: flex;
         flex-direction: column;
@@ -55,6 +40,7 @@
 
 <script>
     function submitWrite() {
+        event.preventDefault();
         const obj_write = JSON.stringify({
             board_title: document.getElementById("detail_title").value,
             board_content: document.getElementById("detail_content").value,
@@ -79,13 +65,25 @@
         });
     }
 </script>
-<input type="hidden" id="board_id" value="<?php echo $board['board_id'] ?>">
+<?php if ($isReply) :?>
+    <input type="hidden" id="board_id" value="<?php echo $board['board_id'] ?>">
+<?php endif; ?>
 <div class="detail_body">
     <input id="detail_title" type="text" placeholder="제목을 입력하세요">
     <textarea id="detail_content" placeholder="내용을 입력하세요"></textarea>
 </div>
 
 <div class="detail_footer">
-    <button class="common_btn" onclick="history.back()">취소</button>
-    <button class="common_btn" onclick="submitWrite()">작성</button>
+    <!-- 답글 뒤로 가기 -->
+    <?php if ($isReply) :?>
+        <a href="/board/view/<?php echo $board['board_id']?>">
+            <button class="board_common_btn">취소</button>
+        </a>
+    <!-- 새글 뒤로 가기 -->
+    <?php else :?>
+        <a href="/board/">
+            <button class="board_common_btn">취소</button>
+        </a>
+    <?php endif; ?>
+    <button class="board_common_btn" onclick="submitWrite()">작성</button>
 </div>

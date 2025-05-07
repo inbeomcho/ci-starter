@@ -7,17 +7,20 @@ Class Board_model extends CI_Model {
     }
 
     // 전체 불러오기
-    public function get_boards($board_id=0) {
+    public function get_boards() {
         $sql = "select * from board order by group_id desc, group_order;";
-
         return $this->db->query($sql)->result_array();
     }
     
     // 상세불러오기
     public function get_board($board_id=0) {
         $data = $this->db->get_where("board", array('board_id'=> $board_id));
-
-        return $data->row_array();
+        $result = $data->row_array();
+        if ($result) {
+            return $result;
+        } else {
+            return false;
+        }
     }
 
     // 작성
@@ -70,7 +73,7 @@ Class Board_model extends CI_Model {
     public function delete_board($board_id) {
         $set = array('board_title'=>'', 'board_content' => '');
         $where = array('board_id'=>$board_id);
-        return $this->db->update('board', $set,$where);
+        $this->db->update('board', $set,$where);
     }
 
     // 업데이트

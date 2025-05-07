@@ -1,21 +1,12 @@
 <style>
     .detail_header {
         display: flex;
-        gap: 15px;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
     }
-    .common_btn {
-        background-color: rgba(12, 158, 102, 0.1);
-        transition: background-color 0.2s;
-        cursor:pointer;
-        border-radius: 6px;
-        border: 1px solid rgba(12, 158, 102, 0.5);
-        width: 100px;
-        height: 30px;
-        margin-bottom: 20px;
-    }
-    .common_btn:hover {
-        background-color: rgba(12, 158, 102, 0.2);
+    .right_actions {
+        margin-left: auto;
     }
     .detail_body {
         flex: 1;
@@ -32,6 +23,7 @@
 
 <script>
     function deleteSubmit() {
+        event.preventDefault();
         fetch("/board/delete/<?php echo $board['board_id']; ?>", {
             method: "PATCH",
         })
@@ -51,19 +43,27 @@
 </script>
 
 <div class="detail_header">
-    <a href="/board/write/<?php echo $board['board_id'] ?>">
-        <button class="common_btn" type="button">답글작성</button>
-    </a>
+    <div class="left_actions">
+        <a href="/board/">
+            <button class="board_common_btn">뒤로가기</button>
+        </a>
+    </div>
+    <div class="right_actions">
+        <a href="/board/write/<?php echo $board['board_id'] ?>">
+            <button class="board_common_btn" type="button">답글작성</button>
+        </a>
+    </div>
 </div>
 
 <div class="detail_body">
-    <div><?php echo $board['board_title'] ?></div>
-    <div><?php echo $board['board_content'] ?></div>
+    <div><?= htmlspecialchars($board['board_title'], ENT_QUOTES, 'UTF-8') ?></div>
+    <div class="margino_line"></div>
+    <div><?= nl2br(htmlspecialchars($board['board_content'], ENT_QUOTES, 'UTF-8')) ?></div>
 </div>
 
 <div class="detail_footer">
-    <button class="common_btn" onclick="deleteSubmit()">삭제</button>
+    <button class="board_common_btn" onclick="deleteSubmit()">삭제</button>
     <a href="/board/update/<?php echo $board['board_id'] ?>">
-        <button class="common_btn" type="button">수정</button>
+        <button class="board_common_btn" type="button">수정</button>
     </a>
 </div>
