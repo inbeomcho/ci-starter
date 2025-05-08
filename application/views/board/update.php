@@ -65,11 +65,6 @@
         });
     }
 </script>
-<div class="header_actions">
-    <a href="/board/view/<?php echo $board['board_id'] ?>?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>">
-        <button class="board_common_btn"><i class="fas fa-arrow-left"></i> 뒤로가기</button>
-    </a>
-</div>
 
 <input type="hidden" id="board_id" value="<?php echo $board['board_id'] ?>">
 
@@ -79,5 +74,8 @@
 </div>
 
 <div class="detail_footer">
+    <a href="/board/view/<?php echo $board['board_id']?>?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>">
+        <button class="board_common_btn">취소</button>
+    </a>
     <button class="board_common_btn" onclick="submitUpdate()">수정</button>
 </div>

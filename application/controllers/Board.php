@@ -13,16 +13,15 @@ class Board extends CI_Controller {
         $segements = $this->uri->segment_array();
 
         $method = $segements[2] ?? null;
-        $param = $segements[3] ?? null;
 
         if ($method == 'view') {
-            $this->view($param);
+            $this->view($method);
         } elseif ($method == 'delete') {
-            $this->delete($param);
+            $this->delete($method);
         } elseif ($method == 'write') {
-            $this->write($param);
+            $this->write($method);
         } elseif ($method == 'update') {
-            $this->update($param);
+            $this->update($method);
         } elseif ($method == '') {
             $this->list();
         } else {

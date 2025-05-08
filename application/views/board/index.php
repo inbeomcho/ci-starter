@@ -72,7 +72,7 @@
         justify-content: center;
         align-items: center;
         gap: 8px;
-        margin-top: 12px;
+        margin: 0px;
         width: 100%;
     }
 

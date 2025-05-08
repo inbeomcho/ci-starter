@@ -7,7 +7,7 @@ Class Pagination_model extends CI_Model {
 
     public function get_pagination_data($current_page=1) {
         // 페이지 당 게시글 개수
-        $per_board = 10;
+        $per_board = 20;
         // 한번에 표시되는 최대 페이지
         $per_page = 5;
         // 총 게시글 수
