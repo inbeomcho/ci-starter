@@ -8,12 +8,9 @@ class Board extends CI_Controller {
         $this->load->helper("url_helper");
     }
 
-    // router대체
     public function index() {
         $segements = $this->uri->segment_array();
-
         $method = $segements[2] ?? null;
-
         if ($method == 'view') {
             $this->view($method);
         } elseif ($method == 'delete') {

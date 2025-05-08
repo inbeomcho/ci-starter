@@ -69,9 +69,12 @@
 <input type="hidden" id="board_id" value="<?php echo $board['board_id'] ?>">
 
 <div class="detail_body">
-    <input id="detail_title" type="text" value="<?php echo $board['board_title'] ?>" autocomplete="off">
-    <textarea id="detail_content" placeholder="내용을 입력하세요"><?php echo $board['board_content'] ?></textarea>
+    <input id="detail_title" type="text"
+           value="<?= htmlspecialchars($board['board_title'], ENT_QUOTES, 'UTF-8') ?>"
+           autocomplete="off">
+    <textarea id="detail_content" placeholder="내용을 입력하세요"><?= htmlspecialchars($board['board_content'], ENT_QUOTES, 'UTF-8') ?></textarea>
 </div>
+
 
 <div class="detail_footer">
     <a href="/board/view/<?php echo $board['board_id']?>?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>">

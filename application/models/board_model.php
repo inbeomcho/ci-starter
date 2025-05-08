@@ -52,17 +52,22 @@ Class Board_model extends CI_Model {
     
             $group_id = $parent['group_id'];
             $depth = $parent['depth'] + 1;
-    
+
             $like = $parent['group_order'] . '-';
+
             $child = $this->db->query("
-                SELECT group_order FROM board 
-                WHERE group_id = ? AND group_order LIKE ? AND depth = ? 
-                ORDER BY group_order ASC LIMIT 1",
-                [$group_id, $like . '%', $depth]
+                SELECT group_order 
+                FROM board 
+                WHERE group_id = ? AND group_order LIKE CONCAT(?, '%') AND depth = ? 
+                ORDER BY group_order DESC 
+                LIMIT 1",
+                [$group_id, $like, $depth]
             )->row_array();
     
             if ($child) {
-                $new_order = $like . uniqid();
+                $parts = explode('-', $child['group_order']);
+                $last_number = (int)end($parts);
+                $new_order = $like . ($last_number + 1);
             } else {
                 $new_order = $like . '1';
             }

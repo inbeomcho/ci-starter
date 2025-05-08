@@ -52,3 +52,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'main';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+// 페이지 로드 api
+// $route['board'] = 'board/list';
+// $route['board/view/(:num)'] = 'board/view/$1';
+// $route['board/write/(:num)'] = 'board/write/$1';
+// $route['board/update/(:num)'] = 'board/update/$1';
+
+// 기능 api
+// $route['board/updateBoard'] = 'board/updateBoard';
+// $route['board/writeBoard'] = 'board/writeBoard';
+// $route['board/deleteBoard'] = 'board/deleteBoard';
