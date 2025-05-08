@@ -35,26 +35,26 @@
         .then(response => {
             if (response.ok) {
                 alert("삭제 성공");
-                window.location.href = "/board/";
+                window.location.href = "/board?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>";
             } else {
                 throw new Error("삭제 실패");
             }
         })
         .catch(error => {
             alert(error);
-            window.location.href = "/board/";
+            window.location.href = "/board?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>";
         });
     }
 </script>
 
 <div class="detail_header">
     <div class="left_actions">
-        <a href="/board/">
+        <a href="/board?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>">
             <button class="board_common_btn">뒤로가기</button>
         </a>
     </div>
     <div class="right_actions">
-        <a href="/board/write/<?php echo $board['board_id'] ?>">
+        <a href="/board/write/<?php echo $board['board_id'] ?>?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>">
             <button class="board_common_btn" type="button">답글작성</button>
         </a>
     </div>
@@ -68,7 +68,7 @@
 
 <div class="detail_footer">
     <button class="board_common_btn" onclick="deleteSubmit()">삭제</button>
-    <a href="/board/update/<?php echo $board['board_id'] ?>">
+    <a href="/board/update/<?php echo $board['board_id'] ?>?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>">
         <button class="board_common_btn" type="button">수정</button>
     </a>
 </div>

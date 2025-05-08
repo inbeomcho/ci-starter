@@ -57,7 +57,7 @@
         .then(response => {
             if (response.ok) {
                 alert("수정 성공");
-                window.location.href = "/board/view/" + document.getElementById('board_id').value;
+                window.location.href = "/board/view/" + document.getElementById('board_id').value + "?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>";
             }
         })
         .catch(error => {
@@ -66,7 +66,7 @@
     }
 </script>
 <div class="header_actions">
-    <a href="/board/view/<?php echo $board['board_id'] ?>">
+    <a href="/board/view/<?php echo $board['board_id'] ?>?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>">
         <button class="board_common_btn"><i class="fas fa-arrow-left"></i> 뒤로가기</button>
     </a>
 </div>
@@ -74,7 +74,7 @@
 <input type="hidden" id="board_id" value="<?php echo $board['board_id'] ?>">
 
 <div class="detail_body">
-    <input id="detail_title" type="text" value="<?php echo $board['board_title'] ?>">
+    <input id="detail_title" type="text" value="<?php echo $board['board_title'] ?>" autocomplete="off">
     <textarea id="detail_content" placeholder="내용을 입력하세요"><?php echo $board['board_content'] ?></textarea>
 </div>
 

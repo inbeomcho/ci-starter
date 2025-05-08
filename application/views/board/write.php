@@ -57,7 +57,7 @@
         .then(response => {
             if (response.ok) {
                 alert("작성 성공");
-                window.location.href = "/board/";
+                window.location.href = "/board?p=1";
             }
         })
         .catch(error => {
@@ -67,19 +67,19 @@
 </script>
 <input type="hidden" id="board_id" value="<?php echo $board['board_id'] ?? 0 ?>">
 <div class="detail_body">
-    <input id="detail_title" type="text" placeholder="제목을 입력하세요">
+    <input id="detail_title" type="text" placeholder="제목을 입력하세요" autocomplete="off">
     <textarea id="detail_content" placeholder="내용을 입력하세요"></textarea>
 </div>
 
 <div class="detail_footer">
     <!-- 답글 뒤로 가기 -->
     <?php if ($isReply) :?>
-        <a href="/board/view/<?php echo $board['board_id']?>">
+        <a href="/board/view/<?php echo $board['board_id']?>?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>">
             <button class="board_common_btn">취소</button>
         </a>
     <!-- 새글 뒤로 가기 -->
     <?php else :?>
-        <a href="/board/">
+        <a href="/board?p=<?= htmlspecialchars($_GET['p'] ?? 1) ?>">
             <button class="board_common_btn">취소</button>
         </a>
     <?php endif; ?>

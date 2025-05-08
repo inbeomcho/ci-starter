@@ -4,6 +4,7 @@ class Board extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model("board_model");
+        $this->load->model("pagination_model");
         $this->load->helper("url_helper");
     }
 
@@ -31,10 +32,14 @@ class Board extends CI_Controller {
 
     // 전체보기
     public function list() {
+        $this->url_changer();
         $this->check_request_method(['GET']);
 
         $data['board'] = $this->board_model->get_boards();
         $data['title'] = "List";
+
+        $current_page = $this->input->get('p', TRUE) ?: 1;
+        $data['pagination'] = $this->pagination_model->get_pagination_data($current_page);
 
         $this->load->view("templates/header", $data);
         $this->load->view("board/index", $data);
@@ -120,6 +125,12 @@ class Board extends CI_Controller {
 
 
     // 기능 메서드
+    private function url_changer() {
+        if (!$this->input->get('p')) {
+            redirect(base_url('board'). '?p=1');
+            return;
+        }
+    }
     private function check_request_method($method) {
         if (!in_array($_SERVER['REQUEST_METHOD'], $method)) {
             show_error('잘못된 접근 방식', 405);
