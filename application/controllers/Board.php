@@ -11,15 +11,7 @@ class Board extends CI_Controller {
     public function index() {
         $segements = $this->uri->segment_array();
         $method = $segements[2] ?? null;
-        if ($method == 'view') {
-            $this->view($method);
-        } elseif ($method == 'delete') {
-            $this->delete($method);
-        } elseif ($method == 'write') {
-            $this->write($method);
-        } elseif ($method == 'update') {
-            $this->update($method);
-        } elseif ($method == '') {
+        if ($method == '') {
             $this->list();
         } else {
             show_404();
@@ -44,6 +36,8 @@ class Board extends CI_Controller {
 
     // 상세보기
     public function view($board_id=null) {
+        echo $board_id;
+        echo "?";
         $this->check_request_method(['GET']);
         $this->check_int_param($board_id);
 

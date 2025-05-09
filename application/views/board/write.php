@@ -57,7 +57,7 @@
         .then(response => {
             if (response.ok) {
                 alert("작성 성공");
-                window.location.href = "/board?p=1";
+                window.location.href = "/board?p=<?= $_GET['p'] ?? 1 ?>";
             }
         })
         .catch(error => {
